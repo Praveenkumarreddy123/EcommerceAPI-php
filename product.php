@@ -10,19 +10,13 @@
     include_once('objects/products.php');
     $db = new DataBase();
     $product = new Product($db->getConnection());
-    $method = $db->methodeechecking($_SERVER['REQUEST_METHOD']);
-
-   // $method = $db->method($_SERVER['']);
-    // $data =  $product->read();
-    // $ob = json_decode(file_get_contents("php://input"));
-    if($method === 1) {
-        if(json_decode(file_get_contents("php://input")) === null) {
-            http_response_code(500);
-        } else {
-            print_r(json_encode($product->read()));
-        }
-    } else if($method === 2) {
-        print_r($_GET);
-        $product->create();
+    $methodName = $_GET['callback'];
+    $product->functionName = $methodName;
+    if(json_decode(file_get_contents("php://input")) === null) {
+        $result = $product->calluserfunction($methodName, '');
+        print_r(json_encode($result));
+        return;
     }
+    $data = json_decode(file_get_contents("php://input"));
+    $result = $product->calluserfunction($methodName, $data);
 ?>
