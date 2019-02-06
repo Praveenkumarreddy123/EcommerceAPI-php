@@ -23,7 +23,7 @@
         }
         public function read() {
            $array = array();
-           $query = "SELECT * FROM $this->table_name";
+           $query = "SELECT * FROM $this->table_name where active = 1";
            $result = $this->conn->query($query);
            if ($result->num_rows > 0) {
                while($row = $result->fetch_assoc()) {
@@ -38,7 +38,7 @@
             $this->price =  $this->Datas->price;
             $this->category_id =  $this->Datas->category_id;
             $this->created =  $this->Datas->created;
-
+           
             $query = "INSERT INTO $this->table_name (name, description, price, category_id, created) VALUES ('$this->name', '$this->description', $this->price, $this->category_id, '$this->created')";
               $result = $this->conn->query($query);
               
