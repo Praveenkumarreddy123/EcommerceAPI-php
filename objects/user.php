@@ -37,7 +37,7 @@
         }
         public function getcities($state_id, $countries_id) {
             $array = array();
-            $query = "SELECT countries.id as country_id , countries.name as country_name, states.id as state_id, states.name as state_name, cities.id as city_id, cities.name as city_name FROM countries INNER JOIN states INNER JOIN cities ON countries.id = $countries_id && states.id = $state_id && cities.state_id = $state_id";
+            $query = "SELECT cities.id  , cities.name   FROM countries INNER JOIN states INNER JOIN cities ON countries.id = $countries_id && states.id = $state_id && cities.state_id = $state_id";
             $result = $this->conn->query($query);
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
@@ -57,14 +57,36 @@
             }
             return $array;
         }
-        public function places() {
-            $test = $this->getcities('1581', '101');
-            $country = array();
-            for($i=0; $i<count($test); $i++){
-               // print_r($test[$i]['city_name']);
-                $country[] = array('country_id' => $test[$i]['country_id'], 'country_name' => $test[$i]['country_name']);
+        public function getcountries($country_id) {
+            $array = array();
+            $query = "SELECT id, name, iso2, iso3, capital, currency  FROM countries" ;
+            $result = $this->conn->query($query);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                 $array[] = $row;
+                }
             }
-            print_r( $country);
+            return $array;
+        }
+        public function places() {
+            $place = $this->getcountries('101');
+            $placess = array();
+            for($country=0; $country<count($place); $country++){
+                $placess[] = array('country_id' => $place[$country]['id'], 'country_name' => $place[$country]['name'], 'iso2' => $place[$country]['iso2'], 'iso3' => $place[$country]['iso3'], 'capital' => $place[$country]['capital'], 'currency' => $place[$country]['currency']);
+                $statearry = array();
+                $getstates = $this->getstates($place[$country]['id']);
+                for($state=0; $state<count($getstates); $state++){
+                    $statearry[$state]= array('state_id' => $getstates[$state]['id'], 'state_name' => $getstates[$state]['name']);
+                    $cityarry = array();
+                    $getcities = $this->getcities($getstates[$state]['id'], $place[$country]['id']);
+                    for($city=0; $city<count($getcities); $city++){
+                        $cityarry[$city]= array('city_id' => $getcities[$city]['id'] ,'city_name' => $getcities[$city]['name']);
+                    }
+                    $statearry[$state]['cities'] = $cityarry;
+                }
+                $placess[$country]['states'] =  $statearry;
+            }
+            return $placess;
         }
    }
   
