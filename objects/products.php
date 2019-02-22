@@ -48,7 +48,6 @@
                 echo '}';
                 return;
             }
-          
         }
         public function delete() {
             if(!$this->Datas->id) {

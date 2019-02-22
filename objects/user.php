@@ -11,6 +11,11 @@
         public $country;
         public $state;
         public $city;
+        public $username;
+        public $password;
+        public $email;
+        public $created_at;
+        public $phonenumber;
         // object properties
 
         // constructor with $db as database connection
@@ -34,6 +39,40 @@
                }
            }
           return $array;
+        }
+        public function loginUser() {
+            $array = array();
+            $this->username = $this->Datas->username;
+            $this->password = $this->Datas->password;
+            $query = "SELECT id,first_name, last_name,email,phonenumber,city, state, country, pincode  FROM $this->table_name WHERE username = '$this->username' && password = '$this->password'";
+            $result = $this->conn->query($query);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                 $array[] = $row;
+                }
+            }
+            print_r(json_encode($array));
+        }
+        public function RegisterUser() {
+            $array = array();
+            $this->username = $this->Datas->username;
+            $this->password = $this->Datas->password;
+            $this->email = $this->Datas->email;
+            $this->created_at = $this->Datas->created_at;
+            $this->phonenumber = $this->Datas->phonenumber;
+            $query = "INSERT INTO $this->table_name (username, password, created_at, email, phonenumber ) VALUES ('$this->username', '$this->password', '$this->created_at', '$this->email', '$this->phonenumber')";
+            $result = $this->conn->query($query);
+            if($result) {
+                echo '{';
+                    echo '"message": "1"';
+                echo '}';
+                return;
+            } else {
+                echo '{';
+                    echo '"message": "0"';
+                echo '}';
+                return;
+            }
         }
         public function getcities($state_id, $countries_id) {
             $array = array();

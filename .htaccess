@@ -11,3 +11,6 @@ RewriteRule ^user/([0-9a-zA-Z]+) user.php?callback=$1
 RewriteRule ^state/([0-9a-zA-Z]+) state.php?callback=$1
 RewriteRule ^city/([0-9a-zA-Z]+) city.php?callback=$1
 RewriteRule ^country/([0-9a-zA-Z]+) country.php?callback=$1
+
+RewriteCond %{HTTP_HOST} ^http://localhost:8080$
+RewriteRule ^(.*)$ http://www.thenewdomain.net/$1
